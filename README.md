@@ -1,1 +1,1 @@
-Testando GITHUB e criando uma API de usuários
+API REST para gerenciamento de usuários, desenvolvida com Node.js, Express e MySQL, organizada em rotas, controllers e models.

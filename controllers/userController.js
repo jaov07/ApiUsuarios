@@ -1,5 +1,6 @@
 import { inserirUsuario, listarUsuarios, buscarUsuarioPorId, deletarUsuarioPorId, atualizarUsuarioPorId,buscarUsuarioPorEmail } from '../model/userModel.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 export const postUsuario = async (req, res) => {
     try {
         const { nome, estado, senha, email} = req.body;
@@ -96,7 +97,14 @@ export const executaLogin = async (req, res) => {
             return res.status(401).json({ mensagem: "Email ou senha inválidos" });
         }
 
-        res.status(200).json({ id: usuario.id, nome: usuario.nome, estado: usuario.estado });
+        const token = jwt.sign(
+            {id: usuario.id},
+            process.env.JWT_SECRET,
+            {expiresIn: '1h'}
+        );
+
+
+        res.status(200).json({token});
     } catch (erro) {
         console.log(erro);
         res.status(500).json({ mensagem: "Erro interno" });

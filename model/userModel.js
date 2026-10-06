@@ -18,5 +18,13 @@ export const buscarUsuarioPorId = async (id) => {
 };
 
 export const deletarUsuarioPorId = async (id) => {
-    await conexao.query("DELETE FROM users WHERE id = ?", [id]);
+    const sql = "DELETE FROM users WHERE id = ?"
+    const [linhas] = await conexao.query(sql, [id]);
+    return linhas
 };
+
+export const atualizarUsuarioPorId = async(id, nome, estado)=>{
+    const sql = "UPDATE users SET nome = ?, estado = ? WHERE id = ?"
+    const [linhas] = await conexao.query(sql, [nome,estado,id]);
+    return linhas;
+}

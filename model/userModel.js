@@ -1,8 +1,8 @@
 import conexao from '../database/conexao.js';
 
-export const inserirUsuario = async (nome, estado, senha) => {
-    const sql = "INSERT INTO users (nome, estado, senha) VALUES (?, ?, ?)";
-    const [resultado] = await conexao.query(sql, [nome, estado, senha]);
+export const inserirUsuario = async (nome, estado, senha, email) => {
+    const sql = "INSERT INTO users (nome, estado, senha, email) VALUES (?, ?, ?, ?)";
+    const [resultado] = await conexao.query(sql, [nome, estado, senha, email]);
     return resultado;
 };
 
@@ -24,7 +24,13 @@ export const deletarUsuarioPorId = async (id) => {
 };
 
 export const atualizarUsuarioPorId = async (id, nome, estado, senhaHash) => {
-    const sql = "UPDATE users SET nome = ?, estado = ?, senha = ? WHERE id = ?";
+    const sql = "UPDATE users SET nome = ?, estado = ?, senha = ?, email = ? WHERE id = ?";
     const [linhas] = await conexao.query(sql, [nome, estado, senhaHash, id]);
+    return linhas;
+};
+
+export const buscarUsuarioPorEmail = async (email) => {
+    const sql = "SELECT id, nome, estado, senha FROM users WHERE email = ?";
+    const [linhas] = await conexao.query(sql, [email]);
     return linhas;
 };

@@ -1,12 +1,13 @@
 import express from 'express';
-import { postUsuario, getUsuarios, getUsuarioPorId, deleteUsuarioPorId, atualizaUsuarioPorId } from '../controllers/userController.js';
+import { postUsuario, getUsuarios, getUsuarioPorId, deleteUsuarioPorId, atualizaUsuarioPorId, executaLogin } from '../controllers/userController.js';
 
 const router = express.Router();
 
-router.post('/users', postUsuario);
-router.get('/users', getUsuarios);
-router.get('/users/:id', getUsuarioPorId);
-router.delete('/users/:id', deleteUsuarioPorId);
-router.put('/users/:id', atualizaUsuarioPorId );
+router.get('/', getUsuarios);
+router.get('/:id', getUsuarioPorId);
+router.post('/', postUsuario);
+router.delete('/:id', deleteUsuarioPorId);
+router.put('/:id', atualizaUsuarioPorId );
+router.post('/login', executaLogin );
 
 export default router;

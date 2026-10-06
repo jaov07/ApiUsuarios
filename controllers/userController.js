@@ -1,11 +1,11 @@
-import { inserirUsuario, listarUsuarios, buscarUsuarioPorId, deletarUsuarioPorId, atualizarUsuarioPorId } from '../model/userModel.js';
+import { inserirUsuario, listarUsuarios, buscarUsuarioPorId, deletarUsuarioPorId, atualizarUsuarioPorId,buscarUsuarioPorEmail } from '../model/userModel.js';
 import bcrypt from 'bcrypt';
 export const postUsuario = async (req, res) => {
     try {
-        const { nome, estado, senha} = req.body;
+        const { nome, estado, senha, email} = req.body;
         const senhaHash = await bcrypt.hash(senha, 10);
-        const resultado = await inserirUsuario(nome, estado, senhaHash);
-        res.status(201).json({ id: resultado.insertId, nome, estado });
+        const resultado = await inserirUsuario(nome, estado, senhaHash,email);
+        res.status(201).json({ id: resultado.insertId, nome, estado,email });
     } catch (erro) {
         console.log(erro);
         res.status(500).json({ mensagem: "Erro ao inserir usuário" });
@@ -74,5 +74,31 @@ export const atualizaUsuarioPorId = async (req, res) => {
 
     } catch (error) {
         return res.status(500).json({ mensagem: "Erro Interno" })
+    }
+};
+
+export const executaLogin = async (req, res) => {
+    try {
+        const { email, senha } = req.body;
+
+        if (!email || !senha) {
+            return res.status(400).json({ mensagem: "email e senha são obrigatórios" });
+        }
+
+        const usuarios = await buscarUsuarioPorEmail(email);
+        if (usuarios.length === 0) {
+            return res.status(401).json({ mensagem: "Email ou senha inválidos" });
+        }
+
+        const usuario = usuarios[0];
+        const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+        if (!senhaCorreta) {
+            return res.status(401).json({ mensagem: "Email ou senha inválidos" });
+        }
+
+        res.status(200).json({ id: usuario.id, nome: usuario.nome, estado: usuario.estado });
+    } catch (erro) {
+        console.log(erro);
+        res.status(500).json({ mensagem: "Erro interno" });
     }
 };

@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken';
 export const postUsuario = async (req, res) => {
     try {
         const { nome, estado, senha, email} = req.body;
+        if(!nome ||!estado||!senha||!email){
+            return res.status(400).json({mensagem:"Bad Request"})
+        }
         const senhaHash = await bcrypt.hash(senha, 10);
         const resultado = await inserirUsuario(nome, estado, senhaHash,email);
         res.status(201).json({ id: resultado.insertId, nome, estado,email });
@@ -40,8 +43,15 @@ export const getUsuarioPorId = async (req, res) => {
 export const deleteUsuarioPorId = async (req, res) => {
     try {
         const id = parseInt(req.params.id)
-        const usuarios = await buscarUsuarioPorId(id);
 
+        if (isNaN(id) || id <= 0) {
+            return res.status(400).json({ mensagem: "Id Inválido" });
+        }
+        if (id !== req.usuarioId) {
+            return res.status(403).json({ mensagem: "Sem permissão" });
+        }
+
+        const usuarios = await buscarUsuarioPorId(id);
         if (usuarios.length === 0) {
             return res.status(404).json({ mensagem: "Usuário não encontrado" });
         }
@@ -49,31 +59,36 @@ export const deleteUsuarioPorId = async (req, res) => {
         await deletarUsuarioPorId(id);
         res.status(200).json({ mensagem: "Usuário deletado com sucesso" });
     } catch (erro) {
+        console.log(erro);
         res.status(500).json({ mensagem: "Erro ao deletar usuário" });
     }
 };
 
 export const atualizaUsuarioPorId = async (req, res) => {
     const id = parseInt(req.params.id)
-    const { nome, estado, senha} = req.body
+    const { nome, estado, senha } = req.body
     try {
-        if (!nome || !estado ||!senha) {
-            return res.status(400).json({ mensagem: "Dados Inválidos" })
-        }
         if (isNaN(id) || id <= 0) {
             return res.status(400).json({ mensagem: "Id Inválido" })
         }
+        if (id !== req.usuarioId) {
+            return res.status(403).json({ mensagem: "Sem permissão" })
+        }
+        if (!nome || !estado || !senha) {
+            return res.status(400).json({ mensagem: "Dados Inválidos" })
+        }
+
         const usuario = await buscarUsuarioPorId(id)
         if (usuario.length === 0) {
             return res.status(404).json({ mensagem: "Usuário não encontrado" })
         }
+
         const senhaHash = await bcrypt.hash(senha, 10)
         await atualizarUsuarioPorId(id, nome, estado, senhaHash)
         const [atualizado] = await buscarUsuarioPorId(id)
         return res.status(200).json(atualizado)
-
-
-    } catch (error) {
+    } catch (erro) {
+        console.log(erro)
         return res.status(500).json({ mensagem: "Erro Interno" })
     }
 };

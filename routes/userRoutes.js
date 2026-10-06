@@ -4,7 +4,7 @@ import { autenticar } from '../middlewares/autenticar.js';
 
 const router = express.Router();
 
-router.get('/', autenticar, getUsuarios);
+router.get('/', getUsuarios);
 router.get('/:id',autenticar, getUsuarioPorId);
 router.post('/', postUsuario);
 router.delete('/:id',autenticar, deleteUsuarioPorId);

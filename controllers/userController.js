@@ -1,44 +1,51 @@
 import { inserirUsuario, listarUsuarios, buscarUsuarioPorId, deletarUsuarioPorId } from '../model/userModel.js';
 
-export const postUsuario = (req, res) => {
-    const { nome, estado } = req.body;
-    inserirUsuario(nome, estado, (err, results) => {
-        if (err) return res.status(500).send("Erro ao inserir usuário");
-        res.status(201).json({ id: results.insertId, nome, estado });
-    });
+export const postUsuario = async (req, res) => {
+    try {
+        const { nome, estado } = req.body;
+        const resultado = await inserirUsuario(nome, estado);
+        res.status(201).json({ id: resultado.insertId, nome, estado });
+    } catch (erro) {
+        res.status(500).json({mensagem:"Erro ao inserir usuário"});
+    }
 };
 
-export const getUsuarios = (req, res) => {
-    listarUsuarios((err, results) => {
-        if (err) return res.status(500).send("Erro ao listar usuários");
-        res.status(200).json(results);
-    });
+export const getUsuarios = async (req, res) => {
+    try {
+        const usuarios = await listarUsuarios();
+        res.status(200).json(usuarios);
+    } catch (erro) {
+        console.log(erro);
+        res.status(500).json({mensagem:"Erro ao listar usuários"});
+    }
 };
 
-export const getUsuarioPorId = (req, res) => {
-    const id = parseInt(req.params.id);
-    buscarUsuarioPorId(id, (err, results) => {
-        if (err) return res.status(500).json({mensagem:"Erro ao buscar usuário por ID"});
-        if (results.length === 0) return res.status(404).json({mensagem: "Usuário não encontrado"});
-        res.status(200).json(results[0]);
-    });
-};
+export const getUsuarioPorId = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const usuarios = await buscarUsuarioPorId(id);
 
-export const deleteUsuarioPorId = (req, res) => {
-    const id = parseInt(req.params.id);
-
-    buscarUsuarioPorId(id, (err, results) => {
-        if (err) {
-            return res.status(500).json({ mensagem: "Erro ao buscar usuário por ID" })
+        if (usuarios.length === 0) {
+            return res.status(404).json({ mensagem: "Usuário não encontrado" });
         }
-        if (results.length === 0) {
-            return res.status(404).json({ mensagem: "Usuário não encontrado" })
+        res.status(200).json(usuarios[0]);
+    } catch (erro) {
+        res.status(500).json({ mensagem: "Erro ao buscar usuário por ID" });
+    }
+};
+
+export const deleteUsuarioPorId = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const usuarios = await buscarUsuarioPorId(id);
+
+        if (usuarios.length === 0) {
+            return res.status(404).json({ mensagem: "Usuário não encontrado" });
         }
-        deletarUsuarioPorId(id, (err2, resultado) => {
-            if (err2) {
-                return res.status(500).json({ mensagem: "Erro ao deletar usuário" })
-            }
-            return res.status(200).json({ mensagem: "Usuário deletado com sucesso" })
-        })
-    })
-}
+
+        await deletarUsuarioPorId(id);
+        res.status(200).json({ mensagem: "Usuário deletado com sucesso" });
+    } catch (erro) {
+        res.status(500).json({ mensagem: "Erro ao deletar usuário" });
+    }
+};

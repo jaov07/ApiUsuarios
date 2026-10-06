@@ -1,21 +1,22 @@
 import conexao from '../database/conexao.js';
 
-export const inserirUsuario = (nome, estado, callback) => {
+export const inserirUsuario = async (nome, estado) => {
     const sql = "INSERT INTO users (nome, estado) VALUES (?, ?)";
-    conexao.query(sql, [nome, estado], callback);
+    const [resultado] = await conexao.query(sql, [nome, estado]);
+    return resultado;
 };
 
-export const listarUsuarios = (callback) => {
-    const sql = "SELECT * FROM users";
-    conexao.query(sql, callback);
+export const listarUsuarios = async () => {
+    const [linhas] = await conexao.query("SELECT * FROM users");
+    return linhas;
 };
 
-export const buscarUsuarioPorId = (id, callback) => {
+export const buscarUsuarioPorId = async (id) => {
     const sql = "SELECT * FROM users WHERE id = ?";
-    conexao.query(sql, [id], callback);
+    const [linhas] = await conexao.query(sql, [id]);
+    return linhas;
 };
 
-export const deletarUsuarioPorId = (id, callback)=>{
-    const sql = "DELETE FROM users WHERE id = ?"
-    conexao.query(sql, [id], callback)
-}
+export const deletarUsuarioPorId = async (id) => {
+    await conexao.query("DELETE FROM users WHERE id = ?", [id]);
+};

@@ -1,11 +1,11 @@
-import mysql from 'mysql2'
+import mysql from 'mysql2/promise'
 
 const conexao = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "root",
-    database: "projeto_github"
+    host: process.env.DBHOST,
+    port: process.env.DBPORT,
+    user: process.env.DBUSER,
+    password: process.env.DBPASSWORD,
+    database: process.env.DATABASENAME
 })
 
 export default conexao

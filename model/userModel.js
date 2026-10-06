@@ -14,3 +14,8 @@ export const buscarUsuarioPorId = (id, callback) => {
     const sql = "SELECT * FROM users WHERE id = ?";
     conexao.query(sql, [id], callback);
 };
+
+export const deletarUsuarioPorId = (id, callback)=>{
+    const sql = "DELETE FROM users WHERE id = ?"
+    conexao.query(sql, [id], callback)
+}

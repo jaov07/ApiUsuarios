@@ -1,4 +1,4 @@
-import { inserirUsuario, listarUsuarios, buscarUsuarioPorId } from '../model/userModel.js';
+import { inserirUsuario, listarUsuarios, buscarUsuarioPorId, deletarUsuarioPorId } from '../model/userModel.js';
 
 export const postUsuario = (req, res) => {
     const { nome, estado } = req.body;
@@ -18,8 +18,27 @@ export const getUsuarios = (req, res) => {
 export const getUsuarioPorId = (req, res) => {
     const id = parseInt(req.params.id);
     buscarUsuarioPorId(id, (err, results) => {
-        if (err) return res.status(500).send("Erro ao buscar usuário por ID");
-        if (results.length === 0) return res.status(404).send("Usuário não encontrado");
+        if (err) return res.status(500).json({mensagem:"Erro ao buscar usuário por ID"});
+        if (results.length === 0) return res.status(404).json({mensagem: "Usuário não encontrado"});
         res.status(200).json(results[0]);
     });
 };
+
+export const deleteUsuarioPorId = (req, res) => {
+    const id = parseInt(req.params.id);
+
+    buscarUsuarioPorId(id, (err, results) => {
+        if (err) {
+            return res.status(500).json({ mensagem: "Erro ao buscar usuário por ID" })
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ mensagem: "Usuário não encontrado" })
+        }
+        deletarUsuarioPorId(id, (err2, resultado) => {
+            if (err2) {
+                return res.status(500).json({ mensagem: "Erro ao deletar usuário" })
+            }
+            return res.status(200).json({ mensagem: "Usuário deletado com sucesso" })
+        })
+    })
+}

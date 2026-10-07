@@ -64,12 +64,12 @@ CREATE TABLE IF NOT EXISTS users (
 Copie o `.env.example` para `.env` e preencha com os seus dados:
 
 ```
-DBHOST=localhost
-DBPORT=3306
-DBUSER=root
-DBPASSWORD=sua_senha
-DATABASENAME=projeto_github
-JWT_SECRET=uma_frase_longa_e_dificil_de_adivinhar
+DBHOST=
+DBPORT=
+DBUSER=
+DBPASSWORD=
+DATABASENAME=
+JWT_SECRET=
 ```
 
 **5. Inicie o servidor**

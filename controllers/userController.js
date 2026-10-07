@@ -5,7 +5,12 @@ export const postUsuario = async (req, res) => {
     try {
         const { nome, estado, senha, email} = req.body;
         if(!nome ||!estado||!senha||!email){
-            return res.status(400).json({mensagem:"Bad Request"})
+            return res.status(400).json({mensagem:"Dados Inválidos"})
+        }
+        const emailExistente = await buscarUsuarioPorEmail(email);
+        if(emailExistente.length > 0){
+            return res.status(409).json({mensagem: "Email já cadastrado"})
+
         }
         const senhaHash = await bcrypt.hash(senha, 10);
         const resultado = await inserirUsuario(nome, estado, senhaHash,email);

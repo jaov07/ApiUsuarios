@@ -71,8 +71,13 @@ DBPASSWORD=
 DATABASENAME=
 JWT_SECRET=
 ```
+**5. Se quiser popular o banco de dados com dados falsos para fins de teste**
+```bash
+  npm run seed
+```
 
-**5. Inicie o servidor**
+
+**6. Inicie o servidor**
 
 ```bash
 npm start

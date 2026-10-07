@@ -18,6 +18,10 @@
     "dotenv": "^18.0.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.3",
-    "mysql2": "^3.14.1"
+    "mysql2": "^3.14.1",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "swagger-autogen": "^2.23.7"
   }
 }
